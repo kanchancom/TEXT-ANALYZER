@@ -1,0 +1,96 @@
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.*;
+import java.io.*;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Scanner;
+import java.util.Set;
+
+public class TextAnalyzer {
+
+    private static HashMap<String, Integer> wordCount = new HashMap<String, Integer>();
+    public static StringBuffer stringBuffer;
+
+    public static void main(String[] args) throws IOException {
+
+        if (args.length == 0) {
+
+            System.out.println("Please specify input file as program argument");
+            return;
+
+        }
+
+        getWordsCount(args[0]);
+
+        String outputFileName;
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Please enter output file name:");
+        outputFileName = scanner.nextLine();
+        while (outputFileName.isEmpty()) {
+            System.out
+                    .println("Invalid file name ! Please re-enter output file name:\n");
+            outputFileName = scanner.nextLine();
+        }
+
+        stringBuffer = new StringBuffer();
+        for (Entry<String, Integer> word : wordCount.entrySet()) {
+            stringBuffer.append(String.format("%s\t%d%n", word.getKey(),
+                    word.getValue()));
+        }
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(outputFileName));
+        bufferedWriter.write(stringBuffer.toString());
+        bufferedWriter.close();
+
+        Set<String> s = wordCount.keySet();
+        List<String> l = new ArrayList<String>(s);
+        Collections.sort(l);
+        String s2 = "";
+        for (int i = 0;  i < l.size(); i++) {
+
+            s2 = s2 + l.get(i) + "\n";
+        }
+
+        System.out.println("Please enter output file name:");
+        outputFileName = scanner.nextLine();
+        while (outputFileName.isEmpty()) {
+            System.out
+                    .println("Invalid file name ! Please re-enter output file name:\n");
+            outputFileName = scanner.nextLine();
+        }
+
+        bufferedWriter = new BufferedWriter(new FileWriter(outputFileName));
+        bufferedWriter.write(s2);
+        bufferedWriter.close();
+
+        scanner.close();
+
+    }
+
+    /**
+     * Updates the Hashmap wordCount by inserting a word as a key and its number
+     * of occurrences as a value.
+     * 
+     * @param filename
+     *            the file to read from
+     * @throws IOException
+     */
+
+    private static void getWordsCount(String filename) throws IOException {
+        Scanner scanner = new Scanner(new File(filename));
+
+        while (scanner.hasNext() == true) {
+            String token = scanner.next();
+            Integer tokenCount = wordCount.get(token);
+            if (tokenCount == null) {
+                wordCount.put(token, 1);
+            } else
+                wordCount.put(token, tokenCount + 1);
+        }
+
+        scanner.close();
+    }// ENDD
+
+}
